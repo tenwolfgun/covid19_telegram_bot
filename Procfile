@@ -1,0 +1,1 @@
+worker: covid19_telegram_bot
