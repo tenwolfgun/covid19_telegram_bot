@@ -8,13 +8,12 @@ import (
 
 type Province struct {
 	Data []struct {
-		KodeProvinsi                 int    `json:"kodeProvinsi"`
-		Provinsi                     string `json:"provinsi"`
-		KasusTerkonfirmasiAkumulatif int    `json:"kasusTerkonfirmasiAkumulatif"`
-		KasusSembuhAkumulatif        int    `json:"kasusSembuhAkumulatif"`
-		KasusMeninggalAkumulatif     int    `json:"kasusMeninggalAkumulatif"`
-		Pembaruan                    string `json:"pembaruan"`
-		Fid                          int    `json:"fid"`
+		Fid       int    `json:"fid"`
+		KodeProvi int    `json:"kodeProvi"`
+		Provinsi  string `json:"provinsi"`
+		KasusPosi int    `json:"kasusPosi"`
+		KasusSemb int    `json:"kasusSemb"`
+		KasusMeni int    `json:"kasusMeni"`
 	} `json:"data"`
 }
 

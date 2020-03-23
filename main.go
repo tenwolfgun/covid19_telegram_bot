@@ -128,9 +128,7 @@ func main() {
 	
 	Terinfkesi: %v
 	Sembuh: %v
-	Meninggal: %v
-	
-	Pembaruan: %v`, resp.Data[i].Provinsi, resp.Data[i].KasusTerkonfirmasiAkumulatif, resp.Data[i].KasusSembuhAkumulatif, resp.Data[i].KasusMeninggalAkumulatif, resp.Data[i].Pembaruan))
+	Meninggal: %v`, resp.Data[i].Provinsi, resp.Data[i].KasusPosi, resp.Data[i].KasusSemb, resp.Data[i].KasusMeni))
 			log.Infoln(m.Payload)
 		}
 	})
