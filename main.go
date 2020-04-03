@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/w0rm1995/covid19_telegram_bot/models"
 	tb "gopkg.in/tucnak/telebot.v2"
-	"os"
-	"time"
 )
 
 func init() {
@@ -31,13 +32,17 @@ func main() {
 
 		b.Send(m.Sender, `/global => - Informasi global kasus covid 19
 
-	/harian => - Informasi harian kasus covid 19
+/harian => - Informasi harian kasus covid 19
 
-	/indonesia => - Informasi kasus covid 19 di Indonesia
+/indonesia => - Informasi kasus covid 19 di Indonesia
 	
-	/provinsi => - Informasi kasus covid 19 berdasarkan provinsi di Indonesia
+/provinsi => - Informasi kasus covid 19 berdasarkan provinsi di Indonesia
 	
-	/sumber => - Informasi mengenai sumber data`)
+/sumber => - Informasi mengenai sumber data
+	
+/kalsel => - Informasi kasus covid 19 di Kalimantan Selatan
+	
+/telepon => - Informasi Call Center Covid 19 di Kalimantan Selatan`)
 		log.Infoln(m.Payload)
 	})
 
@@ -74,8 +79,8 @@ func main() {
 		for i := 0; i < len(resp)-49; i++ {
 			b.Send(m.Sender, fmt.Sprintf(`Tanggal: %v
 				
-	Terinfeksi:  %v
-	Sembuh:  %v`, resp[i].ReportDateString, resp[i].TotalConfirmed, resp[i].TotalRecovered))
+Terinfeksi:  %v
+Sembuh:  %v`, resp[i].ReportDateString, resp[i].TotalConfirmed, resp[i].TotalRecovered))
 		}
 
 		log.Infoln(m.Payload)
@@ -126,9 +131,9 @@ func main() {
 		for i := 0; i < len(resp.Data); i++ {
 			b.Send(m.Sender, fmt.Sprintf(`Provinsi: %v
 	
-	Terinfkesi: %v
-	Sembuh: %v
-	Meninggal: %v`, resp.Data[i].Provinsi, resp.Data[i].KasusPosi, resp.Data[i].KasusSemb, resp.Data[i].KasusMeni))
+Terinfkesi: %v
+Sembuh: %v
+Meninggal: %v`, resp.Data[i].Provinsi, resp.Data[i].KasusPosi, resp.Data[i].KasusSemb, resp.Data[i].KasusMeni))
 			log.Infoln(m.Payload)
 		}
 	})
@@ -145,8 +150,57 @@ func main() {
 
 		b.Send(m.Sender, `Sumber data: 
 	
-	Global: https://covid19.mathdro.id/api/
-	Indonesia : https://indonesia-covid-19.mathdro.id/api/`, tb.NoPreview)
+Global: https://covid19.mathdro.id/api/
+Indonesia : https://indonesia-covid-19.mathdro.id/api/
+KalSel : http://corona.kalselprov.go.id/cov_map`, tb.NoPreview)
+
+		log.Infoln(m.Payload)
+	})
+
+	b.Handle("/kalsel", func(m *tb.Message) {
+		kalsel := models.KalSel{}
+
+		resp, err := kalsel.GetKalSelCovid19()
+
+		if err != nil {
+			log.Infoln(err)
+		}
+
+		if !m.Private() {
+			return
+		}
+
+		for i := 0; i < len(resp); i++ {
+			b.Send(m.Sender, fmt.Sprintf(`Kabupaten/Kota: %v
+	
+Orang Dalam Pemantauan: %v
+Pasien Dalam Pengawasan: %v
+Positif: %v
+Sembuh: %v
+Meninggal: %v`, resp[i].Name, resp[i].CovOdpCount, resp[i].CovPdpCount, resp[i].CovPositiveCount, resp[i].CovRecoveredCount, resp[i].CovDiedCount))
+		}
+
+		log.Infoln(m.Payload)
+	})
+
+	b.Handle("/telepon", func(m *tb.Message) {
+		kalsel := models.KalSel{}
+
+		resp, err := kalsel.GetKalSelCovid19()
+
+		if err != nil {
+			log.Infoln(err)
+		}
+
+		if !m.Private() {
+			return
+		}
+
+		for i := 0; i < len(resp); i++ {
+			b.Send(m.Sender, fmt.Sprintf(`Kabupaten/Kota: %v
+	
+Call Center: %v`, resp[i].Name, resp[i].CallCenter))
+		}
 
 		log.Infoln(m.Payload)
 	})
